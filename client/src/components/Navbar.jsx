@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Menu, Bell, CheckCircle2, AlertCircle, Clock, Check } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { Menu, Bell, CheckCircle2, AlertCircle, Clock, Check, Sun, Moon, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import API from '../api/axios';
+import { useTheme } from '../context/ThemeContext';
 
-const Navbar = ({ setMobileOpen }) => {
+const Navbar = ({ setMobileOpen, collapsed, toggleCollapse }) => {
   const { user } = useSelector((state) => state.auth);
+  const { theme, toggleTheme } = useTheme();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -56,30 +58,53 @@ const Navbar = ({ setMobileOpen }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs transition-colors duration-200">
       <div className="flex items-center space-x-3">
+        {/* Mobile menu button */}
         <button
           onClick={() => setMobileOpen(true)}
-          className="p-2 text-slate-500 rounded-lg hover:bg-slate-100 lg:hidden"
+          className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden transition"
           aria-label="Open menu"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden sm:block">
-          <h1 className="text-lg font-bold text-slate-800">
-            Welcome back, <span className="text-blue-600">{user?.name?.split(' ')[0] || 'User'}</span>
+        {/* Desktop Sidebar Collapse Toggle Button */}
+        <button
+          onClick={toggleCollapse}
+          title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          className="hidden lg:flex p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+        </button>
+
+        <div>
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+            Welcome back, <span className="text-blue-600 dark:text-blue-400">{user?.name?.split(' ')[0] || 'User'}</span>
           </h1>
-          <p className="text-xs text-slate-500">CRM360 Enterprise Workspace</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">CRM360 Enterprise Workspace</p>
         </div>
       </div>
 
-      <div className="flex items-center space-x-3 sm:space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        {/* Theme Toggle (Light / Dark) */}
+        <button
+          onClick={toggleTheme}
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+          className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-5 h-5 text-amber-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-slate-600" />
+          )}
+        </button>
+
         {/* Notification Bell */}
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="relative p-2 text-slate-600 transition-colors rounded-full hover:bg-slate-100 hover:text-slate-900 focus:outline-none"
+            className="relative p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none"
             title="Notifications"
           >
             <Bell className="w-5 h-5" />
@@ -92,12 +117,12 @@ const Navbar = ({ setMobileOpen }) => {
 
           {/* Notifications Dropdown */}
           {showNotifs && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100">
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center space-x-2">
-                  <span className="font-semibold text-slate-800 text-sm">Notifications</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-sm">Notifications</span>
                   {unreadCount > 0 && (
-                    <span className="px-2 py-0.5 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">
+                    <span className="px-2 py-0.5 text-xs font-semibold text-blue-700 bg-blue-100 dark:bg-blue-950 dark:text-blue-300 rounded-full">
                       {unreadCount} new
                     </span>
                   )}
@@ -105,16 +130,16 @@ const Navbar = ({ setMobileOpen }) => {
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                    className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Mark all read
                   </button>
                 )}
               </div>
 
-              <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+              <div className="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
                 {notifications.length === 0 ? (
-                  <div className="py-8 text-center text-sm text-slate-400">
+                  <div className="py-8 text-center text-xs text-slate-400">
                     No notifications right now
                   </div>
                 ) : (
@@ -122,8 +147,8 @@ const Navbar = ({ setMobileOpen }) => {
                     <div
                       key={n._id}
                       onClick={() => !n.isRead && handleMarkAsRead(n._id)}
-                      className={`p-3 text-left transition-colors cursor-pointer hover:bg-slate-50 flex items-start space-x-3 ${
-                        !n.isRead ? 'bg-blue-50/50' : ''
+                      className={`p-3 text-left transition-colors cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-start space-x-3 ${
+                        !n.isRead ? 'bg-blue-50/50 dark:bg-blue-950/30' : ''
                       }`}
                     >
                       <div className="mt-0.5 shrink-0">
@@ -136,12 +161,12 @@ const Navbar = ({ setMobileOpen }) => {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-semibold ${!n.isRead ? 'text-slate-900' : 'text-slate-600'}`}>
+                        <p className={`text-xs font-semibold ${!n.isRead ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300'}`}>
                           {n.title}
                         </p>
-                        <p className="text-xs text-slate-500 line-clamp-2 mt-0.5">{n.message}</p>
-                        <span className="text-[10px] text-slate-400 mt-1 block">
-                          {new Date(n.createdAt).toLocaleDateString([], { hour: '2-digit', minute: '2-digit' })}
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">{n.message}</p>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">
+                          {new Date(n.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       {!n.isRead && (
@@ -156,13 +181,13 @@ const Navbar = ({ setMobileOpen }) => {
         </div>
 
         {/* User Pill */}
-        <div className="flex items-center pl-3 space-x-3 border-l border-slate-200">
+        <div className="flex items-center pl-2 space-x-2.5 border-l border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-sm">
             {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="hidden md:block text-left">
-            <p className="text-xs font-semibold text-slate-800 leading-tight">{user?.name}</p>
-            <p className="text-[10px] text-slate-500 leading-tight">{user?.role}</p>
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">{user?.name}</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">{user?.role}</p>
           </div>
         </div>
       </div>

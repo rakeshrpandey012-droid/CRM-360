@@ -137,8 +137,8 @@ const Customers = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Customer Management</h1>
-          <p className="text-sm text-slate-500">Manage client accounts, contact details, and interaction histories</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Customer Management</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Manage client accounts, contact details, and interaction histories</p>
         </div>
         <button
           onClick={() => {
@@ -152,7 +152,7 @@ const Customers = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -160,7 +160,7 @@ const Customers = () => {
             placeholder="Search by name, email, or company..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition"
+            className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 rounded-xl focus:outline-none focus:border-blue-500 transition"
           />
         </div>
 
@@ -173,7 +173,7 @@ const Customers = () => {
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${
                 statusFilter === st
                   ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {st}
@@ -183,10 +183,10 @@ const Customers = () => {
       </div>
 
       {/* Customers Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold uppercase text-slate-500 tracking-wider">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
               <tr>
                 <th className="px-6 py-3.5">Customer / Contact</th>
                 <th className="px-6 py-3.5">Company & Industry</th>
@@ -196,7 +196,7 @@ const Customers = () => {
                 <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {loading ? (
                 <tr>
                   <td colSpan="6" className="py-12 text-center text-slate-400">
@@ -211,40 +211,40 @@ const Customers = () => {
                 </tr>
               ) : (
                 customers.map((c) => (
-                  <tr key={c._id} className="hover:bg-slate-50/80 transition">
+                  <tr key={c._id} className="hover:bg-slate-50/80 dark:hover:bg-slate-850 transition">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-slate-900">{c.name}</div>
+                      <div className="font-semibold text-slate-900 dark:text-white">{c.name}</div>
                       <div className="text-xs text-slate-400 flex items-center mt-0.5">
                         <Mail className="w-3 h-3 mr-1" /> {c.email}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-slate-800 flex items-center">
+                      <div className="font-medium text-slate-800 dark:text-slate-200 flex items-center">
                         <Building2 className="w-3.5 h-3.5 text-slate-400 mr-1.5" />
                         {c.company || 'N/A'}
                       </div>
                       <div className="text-xs text-slate-400">{c.industry}</div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-600 font-mono">
+                    <td className="px-6 py-4 text-xs text-slate-600 dark:text-slate-400 font-mono">
                       {c.phone || '—'}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                         c.status === 'Active'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}>
                         {c.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-600">
+                    <td className="px-6 py-4 text-xs text-slate-600 dark:text-slate-300">
                       {c.assignedTo?.name || 'Unassigned'}
                     </td>
                     <td className="px-6 py-4 text-right space-x-1">
                       <button
                         onClick={() => handleOpenDetail(c)}
                         title="View Details & Timeline"
-                        className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                        className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -264,14 +264,14 @@ const Customers = () => {
                           setShowEditModal(true);
                         }}
                         title="Edit Customer"
-                        className="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition"
+                        className="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-lg transition"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteCustomer(c._id)}
                         title="Soft Delete"
-                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 rounded-lg transition"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -284,23 +284,23 @@ const Customers = () => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <div>
-            Showing Page <span className="font-semibold text-slate-800">{pagination.page}</span> of{' '}
-            <span className="font-semibold text-slate-800">{pagination.pages}</span> ({pagination.total} total customers)
+            Showing Page <span className="font-semibold text-slate-800 dark:text-white">{pagination.page}</span> of{' '}
+            <span className="font-semibold text-slate-800 dark:text-white">{pagination.pages}</span> ({pagination.total} total customers)
           </div>
           <div className="space-x-2">
             <button
               disabled={pagination.page <= 1}
               onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-              className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-medium hover:bg-slate-100 disabled:opacity-50 transition"
+              className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 transition"
             >
               Previous
             </button>
             <button
               disabled={pagination.page >= pagination.pages}
               onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-              className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-medium hover:bg-slate-100 disabled:opacity-50 transition"
+              className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 transition"
             >
               Next
             </button>
@@ -311,34 +311,34 @@ const Customers = () => {
       {/* ADD CUSTOMER MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h2 className="text-lg font-bold text-slate-800">Add New Customer</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full p-6 overflow-hidden">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-white">Add New Customer</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleAddCustomer} className="mt-4 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Contact Name *</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Name *</label>
                   <input
                     required
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                     placeholder="e.g. John Miller"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Email *</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email *</label>
                   <input
                     required
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                     placeholder="john@company.com"
                   />
                 </div>
@@ -346,22 +346,22 @@ const Customers = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Company</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Company</label>
                   <input
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                     placeholder="Company Name"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Phone</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone</label>
                   <input
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                     placeholder="+1 555-0100"
                   />
                 </div>
@@ -369,11 +369,11 @@ const Customers = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Industry</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Industry</label>
                   <select
                     value={formData.industry}
                     onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   >
                     <option value="Technology">Technology</option>
                     <option value="Healthcare">Healthcare</option>
@@ -384,11 +384,11 @@ const Customers = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -397,21 +397,21 @@ const Customers = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Address</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Address</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   placeholder="City, State, Country"
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4 border-t border-slate-100">
+              <div className="flex justify-end space-x-2 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
                 >
                   Cancel
                 </button>
@@ -430,86 +430,86 @@ const Customers = () => {
       {/* EDIT CUSTOMER MODAL */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <h2 className="text-lg font-bold text-slate-800">Edit Customer</h2>
-              <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full p-6 overflow-hidden">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-lg font-bold text-slate-800 dark:text-white">Edit Customer</h2>
+              <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleEditCustomer} className="mt-4 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Name</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Name</label>
                   <input
                     required
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email</label>
                   <input
                     required
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Company</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Company</label>
                   <input
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Phone</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone</label>
                   <input
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Industry</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Industry</label>
                   <input
                     type="text"
                     value={formData.industry}
                     onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4 border-t border-slate-100">
+              <div className="flex justify-end space-x-2 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
                 >
                   Cancel
                 </button>
@@ -528,13 +528,13 @@ const Customers = () => {
       {/* DETAIL & TIMELINE MODAL */}
       {showDetailModal && selectedCustomer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h2 className="text-xl font-bold text-slate-800">{selectedCustomer.name}</h2>
-                <p className="text-xs text-slate-500">{selectedCustomer.company} • {selectedCustomer.industry}</p>
+                <h2 className="text-xl font-bold text-slate-800 dark:text-white">{selectedCustomer.name}</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{selectedCustomer.company} • {selectedCustomer.industry}</p>
               </div>
-              <button onClick={() => setShowDetailModal(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setShowDetailModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -542,24 +542,24 @@ const Customers = () => {
             {/* Content Body */}
             <div className="flex-1 overflow-y-auto py-4 space-y-6">
               {/* Info card */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 rounded-xl text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl text-xs">
                 <div>
                   <span className="text-slate-400 block">Email</span>
-                  <span className="font-semibold text-slate-800">{selectedCustomer.email}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-100">{selectedCustomer.email}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block">Phone</span>
-                  <span className="font-semibold text-slate-800">{selectedCustomer.phone || 'N/A'}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-100">{selectedCustomer.phone || 'N/A'}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block">Status</span>
-                  <span className="font-semibold text-slate-800">{selectedCustomer.status}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-100">{selectedCustomer.status}</span>
                 </div>
               </div>
 
               {/* Add Interaction / Note Form */}
-              <div className="p-4 border border-blue-100 bg-blue-50/40 rounded-xl">
-                <h3 className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2 flex items-center">
+              <div className="p-4 border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/30 rounded-xl">
+                <h3 className="text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider mb-2 flex items-center">
                   <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Customer Activity
                 </h3>
                 <form onSubmit={handleAddActivity} className="space-y-3">
@@ -570,7 +570,9 @@ const Customers = () => {
                         type="button"
                         onClick={() => setActivityType(t)}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition ${
-                          activityType === t ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'
+                          activityType === t
+                            ? 'bg-blue-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                         }`}
                       >
                         {t}
@@ -583,11 +585,11 @@ const Customers = () => {
                       placeholder="Enter activity notes, meeting summary, or discussion details..."
                       value={newActivityNote}
                       onChange={(e) => setNewActivityNote(e.target.value)}
-                      className="flex-1 px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500"
+                      className="flex-1 px-3 py-2 text-xs bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                     />
                     <button
                       type="submit"
-                      className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl flex items-center transition"
+                      className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl flex items-center transition shadow-xs"
                     >
                       <Send className="w-3.5 h-3.5 mr-1" /> Log
                     </button>
@@ -605,19 +607,19 @@ const Customers = () => {
                 ) : (
                   <div className="space-y-3">
                     {activities.map((act) => (
-                      <div key={act._id} className="p-3 bg-white border border-slate-100 rounded-xl shadow-xs flex items-start space-x-3">
-                        <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
+                      <div key={act._id} className="p-3 bg-white dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 rounded-xl shadow-xs flex items-start space-x-3">
+                        <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
                           {act.type.charAt(0)}
                         </div>
                         <div className="flex-1 text-xs">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold text-slate-800">{act.type}</span>
-                            <span className="text-[10px] text-slate-400">
+                            <span className="font-bold text-slate-800 dark:text-slate-100">{act.type}</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500">
                               {new Date(act.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
-                          <p className="text-slate-600 mt-1">{act.description}</p>
-                          <span className="text-[10px] text-slate-400 block mt-1">Logged by: {act.createdBy?.name || 'User'}</span>
+                          <p className="text-slate-600 dark:text-slate-300 mt-1">{act.description}</p>
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">Logged by: {act.createdBy?.name || 'User'}</span>
                         </div>
                       </div>
                     ))}
@@ -626,10 +628,10 @@ const Customers = () => {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 flex justify-end">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition"
+                className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition"
               >
                 Close
               </button>

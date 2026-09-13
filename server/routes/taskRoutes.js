@@ -9,7 +9,7 @@ const {
   bulkAssignTasks,
   deleteTask
 } = require('../controllers/taskController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.use(protect);
 
@@ -22,7 +22,7 @@ router.post('/bulk-assign', bulkAssignTasks);
 router.route('/:id')
   .get(getTaskById)
   .put(updateTask)
-  .delete(deleteTask);
+  .delete(authorize('Admin', 'Sales Manager'), deleteTask);
 
 router.put('/:id/status', updateTaskStatus);
 

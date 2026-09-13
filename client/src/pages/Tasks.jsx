@@ -95,18 +95,18 @@ const Tasks = () => {
     }
   };
   const getPriorityBadge = (p) => {
-    if (p === 'Urgent') return 'bg-rose-50 text-rose-700 border-rose-200';
-    if (p === 'High') return 'bg-amber-50 text-amber-700 border-amber-200';
-    if (p === 'Medium') return 'bg-blue-50 text-blue-700 border-blue-200';
-    return 'bg-slate-100 text-slate-600 border-slate-200';
+    if (p === 'Urgent') return 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+    if (p === 'High') return 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+    if (p === 'Medium') return 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+    return 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700';
   };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Task Management</h1>
-          <p className="text-sm text-slate-500">Track action items, follow-ups, and sales team assignments</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Task Management</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Track action items, follow-ups, and sales team assignments</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
@@ -117,7 +117,7 @@ const Tasks = () => {
       </div>
 
       {/* Filter and Bulk Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="font-semibold text-slate-400 uppercase">Status:</span>
           {['All', 'Todo', 'In Progress', 'Completed'].map((st) => (
@@ -125,20 +125,24 @@ const Tasks = () => {
               key={st}
               onClick={() => setStatusFilter(st)}
               className={`px-3 py-1.5 rounded-lg font-semibold transition ${
-                statusFilter === st ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                statusFilter === st
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {st}
             </button>
           ))}
-          <div className="h-4 w-px bg-slate-200 mx-2 hidden sm:block"></div>
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
           <span className="font-semibold text-slate-400 uppercase">Priority:</span>
           {['All', 'Urgent', 'High', 'Medium', 'Low'].map((pr) => (
             <button
               key={pr}
               onClick={() => setPriorityFilter(pr)}
               className={`px-2.5 py-1 rounded-lg font-semibold transition ${
-                priorityFilter === pr ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                priorityFilter === pr
+                  ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               {pr}
@@ -148,12 +152,12 @@ const Tasks = () => {
 
         {/* Bulk Action Toolbar */}
         {selectedTaskIds.length > 0 && (
-          <div className="flex items-center space-x-2 bg-blue-50 p-2 rounded-xl border border-blue-200">
-            <span className="text-xs font-bold text-blue-900">{selectedTaskIds.length} selected</span>
+          <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-950/50 p-2 rounded-xl border border-blue-200 dark:border-blue-800">
+            <span className="text-xs font-bold text-blue-900 dark:text-blue-300">{selectedTaskIds.length} selected</span>
             <select
               value={bulkAssignee}
               onChange={(e) => setBulkAssignee(e.target.value)}
-              className="text-xs bg-white border border-blue-300 rounded-lg px-2 py-1 text-slate-700"
+              className="text-xs bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-700 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-200"
             >
               <option value="">Reassign to...</option>
               {users.map((u) => (
@@ -171,20 +175,20 @@ const Tasks = () => {
       </div>
 
       {/* Task List */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
         {loading ? (
           <div className="py-12 text-center text-slate-400 text-sm">Loading tasks...</div>
         ) : tasks.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-sm">No tasks matching the selected filters.</div>
         ) : (
           tasks.map((task) => (
-            <div key={task._id} className="p-4 hover:bg-slate-50/80 transition flex items-center justify-between gap-4">
+            <div key={task._id} className="p-4 hover:bg-slate-50/80 dark:hover:bg-slate-850 transition flex items-center justify-between gap-4">
               <div className="flex items-start space-x-3 flex-1 min-w-0">
                 <input
                   type="checkbox"
                   checked={selectedTaskIds.includes(task._id)}
                   onChange={() => toggleSelectTask(task._id)}
-                  className="mt-1 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  className="mt-1 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 dark:bg-slate-800"
                 />
                 <button
                   onClick={() => handleToggleStatus(task)}
@@ -193,20 +197,20 @@ const Tasks = () => {
                       ? 'bg-emerald-600 border-emerald-600 text-white'
                       : task.status === 'In Progress'
                       ? 'border-blue-500 text-blue-600'
-                      : 'border-slate-300 text-transparent'
+                      : 'border-slate-300 dark:border-slate-600 text-transparent'
                   }`}
                   title="Click to cycle status"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 </button>
                 <div className="min-w-0 flex-1">
-                  <p className={`text-sm font-bold truncate ${task.status === 'Completed' ? 'line-through text-slate-400' : 'text-slate-800'}`}>
+                  <p className={`text-sm font-bold truncate ${task.status === 'Completed' ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'}`}>
                     {task.title}
                   </p>
                   {task.description && (
-                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{task.description}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{task.description}</p>
                   )}
-                  <div className="flex flex-wrap items-center gap-3 mt-2 text-[11px] text-slate-400">
+                  <div className="flex flex-wrap items-center gap-3 mt-2 text-[11px] text-slate-400 dark:text-slate-500">
                     <span className={`px-2 py-0.5 rounded-full font-bold border ${getPriorityBadge(task.priority)}`}>
                       {task.priority} Priority
                     </span>
@@ -214,7 +218,7 @@ const Tasks = () => {
                       <Calendar className="w-3 h-3 mr-1" />
                       Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No date'}
                     </span>
-                    <span className="flex items-center font-medium text-slate-600">
+                    <span className="flex items-center font-medium text-slate-600 dark:text-slate-300">
                       <User className="w-3 h-3 mr-1" />
                       {task.assignedTo?.name || 'Unassigned'}
                     </span>
@@ -225,7 +229,7 @@ const Tasks = () => {
               <div className="flex items-center space-x-2 shrink-0">
                 <button
                   onClick={() => handleToggleStatus(task)}
-                  className="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg"
+                  className="px-2.5 py-1 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg transition"
                 >
                   {task.status}
                 </button>
@@ -244,42 +248,42 @@ const Tasks = () => {
       {/* CREATE TASK MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="text-base font-bold text-slate-800">Create New Task</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-base font-bold text-slate-800 dark:text-white">Create New Task</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleCreateTask} className="mt-4 space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Task Title *</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Task Title *</label>
                 <input
                   required
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. Follow up on proposal SLA"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Description</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Description</label>
                 <textarea
                   rows="2"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                   placeholder="Details or action steps..."
                 ></textarea>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Priority</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Priority</label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -288,21 +292,21 @@ const Tasks = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Due Date</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Due Date</label>
                   <input
                     type="date"
                     value={formData.dueDate}
                     onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Assignee</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Assignee</label>
                 <select
                   value={formData.assignedTo}
                   onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500"
                 >
                   <option value="">Select team member...</option>
                   {users.map((u) => (
@@ -310,11 +314,11 @@ const Tasks = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">
+              <div className="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl">
+                <button type="submit" className="px-4 py-2 font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-md shadow-blue-500/20 transition">
                   Save Task
                 </button>
               </div>

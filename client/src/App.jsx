@@ -10,7 +10,9 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Customers from './pages/Customers';
 import Leads from './pages/Leads';
+import Pipeline from './pages/Pipeline';
 import Tasks from './pages/Tasks';
+import Team from './pages/Team';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -58,10 +60,26 @@ function App() {
         }
       />
       <Route
+        path="/pipeline"
+        element={
+          <ProtectedRoute>
+            <Pipeline />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/tasks"
         element={
           <ProtectedRoute>
             <Tasks />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team"
+        element={
+          <ProtectedRoute>
+            <Team />
           </ProtectedRoute>
         }
       />

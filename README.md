@@ -1,4 +1,4 @@
-﻿# CRM360: Production-Ready MERN SaaS Platform
+# CRM360: Production-Ready MERN SaaS Platform
 
 A modern, full-stack Customer Relationship Management (CRM) platform built for small-to-midsize businesses and enterprise sales teams.
 
@@ -128,27 +128,56 @@ Frontend runs on **http://localhost:5173**.
   - `GET /api/notifications`
   - `PUT /api/notifications/:id/read`
   - `PUT /api/notifications/read-all`
+- **Team & Roles**:
+  - `GET /api/users`
+  - `POST /api/users` (Admin / Manager create team member)
+  - `GET /api/users/:id`
+  - `PUT /api/users/:id/role` (Admin update user role)
+  - `DELETE /api/users/:id` (Admin remove team member)
 
 ---
 
-## 🚢 Deployment Guide
+## 🚢 Vercel Deployment Guide
 
-### Deploying Backend (Render / Railway)
-1. Push repository to GitHub.
-2. In Render or Railway, create a new **Web Service** with root directory `server`.
-3. Set environment variables:
-   - `PORT`: `5000`
+### Option 1: Fullstack 1-Click Monorepo on Vercel (Recommended)
+You can deploy both the React frontend and the Express API serverless functions directly on Vercel in one single step:
+1. Push your repository to **GitHub**.
+2. Go to [Vercel Dashboard](https://vercel.com/new) and import the repository.
+3. Keep the **Root Directory** as `./` (default).
+4. Vercel will automatically detect `vercel.json` and build:
+   - React 19 Frontend: Served statically from `client/dist`.
+   - Express Backend: Deployed as Serverless Functions handling `/api/*`.
+5. Under **Environment Variables**, add:
+   - `MONGO_URI`: Your MongoDB Atlas connection URI (`mongodb+srv://...`)
+   - `JWT_SECRET`: A secure random key (e.g., `crm360_production_key_2026`)
+   - `JWT_REFRESH_SECRET`: A secure random refresh key
    - `NODE_ENV`: `production`
-   - `MONGO_URI`: `your-mongodb-atlas-connection-string`
-   - `JWT_SECRET`: `your_secure_random_key`
-   - `JWT_REFRESH_SECRET`: `your_secure_refresh_key`
-4. Build command: `npm install`
-5. Start command: `node server.js`
+6. Click **Deploy**. Your CRM is live on a single URL with zero CORS setup!
 
-### Deploying Frontend (Vercel)
-1. In Vercel, import repository and set root directory to `client`.
-2. Framework Preset: **Vite**.
-3. Build Command: `npm run build`.
-4. Output Directory: `dist`.
-5. Environment Variables:
-   - `VITE_API_URL`: Your deployed backend URL.
+### Option 2: Decoupled Deployment (Frontend on Vercel + Backend on Render/Railway)
+If you prefer running a persistent background Node server on Render or Railway:
+1. **Deploy Backend**:
+   - In Render/Railway, create a **Web Service** with Root Directory: `server`.
+   - Build Command: `npm install`, Start Command: `node server.js`.
+   - Set `MONGO_URI`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `NODE_ENV=production`.
+2. **Deploy Frontend on Vercel**:
+   - In Vercel, import repository with Root Directory set to `client`.
+   - Framework Preset: **Vite**.
+   - Build Command: `npm run build`, Output Directory: `dist`.
+   - Environment Variable: `VITE_API_URL=https://your-backend.onrender.com`.
+
+---
+
+## 📋 PDF Requirements Compliance Checklist
+
+| Requirement | Implementation Details | Status |
+|---|---|---|
+| **1. User Authentication** | Registration, Login, JWT access/refresh tokens, Forgot Password, Reset Password, User Profile & Password Update | ✅ 100% Complete |
+| **2. Role Management** | 3 User Tiers (Admin, Sales Manager, Sales Executive), Dedicated Team page (`/team`), RBAC Matrix table, Admin Role Switcher, Member Invite | ✅ 100% Complete |
+| **3. Customer Management** | CRUD, search & status filter, pagination, Customer Details modal, interaction timeline logging (Notes, Calls, Meetings, Emails) | ✅ 100% Complete |
+| **4. Lead Management** | Lead directory, contact info, lead source tracking, notes, 1-click lead-to-customer conversion | ✅ 100% Complete |
+| **5. Sales Pipeline** | Dedicated 6-Stage Kanban Board (`/pipeline`): `New`, `Contacted`, `Qualified`, `Proposal Sent`, `Won`, `Lost`, stage value totals, deal cards, stage advancement | ✅ 100% Complete |
+| **6. Task Management** | Create, assign, due dates, priority tiers (Urgent, High, Medium, Low), status toggles, multi-select bulk reassignment | ✅ 100% Complete |
+| **7. Dashboard** | Executive metrics, Total Customers (+ trend), Active Leads (+ trend), Pending & Urgent Tasks, Closed Won Deals & Revenue, Revenue Trend, Pipeline Distribution, Lead Sources, Sales Rep Table | ✅ 100% Complete |
+| **8. Notifications** | Topbar Notification Center, unread counter badge, automated alerts for assigned tasks, lead updates, and upcoming deadlines (< 48h) | ✅ 100% Complete |
+| **Non-Functional** | Responsive mobile/desktop layout, Plus Jakarta Sans typography, dark mode sidebar, modular code architecture, Vercel ready | ✅ 100% Complete |

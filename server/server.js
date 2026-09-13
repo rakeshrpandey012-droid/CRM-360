@@ -80,6 +80,23 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Serverless Database Initialization Middleware
+let dbInitialized = false;
+app.use(async (req, res, next) => {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    if (!dbInitialized) {
+      try {
+        await connectDB();
+        await seedDataIfEmpty();
+        dbInitialized = true;
+      } catch (err) {
+        console.error('Serverless DB initialization error:', err.message);
+      }
+    }
+  }
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
@@ -91,6 +108,9 @@ const startServer = async () => {
   });
 };
 
-startServer();
+// Only start standalone HTTP server if not in Vercel / serverless environment
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  startServer();
+}
 
 module.exports = app;
