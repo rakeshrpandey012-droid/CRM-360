@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api/axios';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import {
   GitPullRequest, Search, Plus, UserCheck, CheckCircle2,
   Building2, Eye, Trash2, ArrowRight, ArrowLeft, DollarSign,
   Briefcase, TrendingUp, Sparkles, Filter, X, Phone, Mail, Award, AlertCircle
 } from 'lucide-react';
+import CircularChart from '../components/CircularChart';
 
 const PIPELINE_STAGES = [
   { id: 'New', label: 'New Lead', color: 'border-sky-500', headerBg: 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300', badge: 'bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300' },
@@ -16,6 +19,7 @@ const PIPELINE_STAGES = [
 ];
 
 const Pipeline = () => {
+  const toast = useToast();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -27,6 +31,11 @@ const Pipeline = () => {
   const [activities, setActivities] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [activityType, setActivityType] = useState('Note');
+
+  // Convert Modal State
+  const [convertModalOpen, setConvertModalOpen] = useState(false);
+  const [leadToConvert, setLeadToConvert] = useState(null);
+  const [isConverting, setIsConverting] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -66,19 +75,30 @@ const Pipeline = () => {
     try {
       const res = await API.put(`/leads/${leadId}/status`, { status: newStage });
       setLeads(prev => prev.map(l => (l._id === leadId ? res.data.data : l)));
+      toast.success('Stage Updated', `Moved to ${newStage}.`);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update pipeline stage');
+      toast.error('Move Failed', err.response?.data?.message || 'Could not update pipeline stage');
     }
   };
 
-  const handleConvertLead = async (leadId) => {
-    if (!window.confirm('Convert this lead into a permanent Customer account? This will mark the deal as Closed Won.')) return;
+  const confirmConvertLead = (lead) => {
+    setLeadToConvert(lead);
+    setConvertModalOpen(true);
+  };
+
+  const handleConvertLead = async () => {
+    if (!leadToConvert) return;
     try {
-      const res = await API.post(`/leads/${leadId}/convert`);
-      alert(`Success! Lead converted to customer "${res.data.data.customer.name}".`);
+      setIsConverting(true);
+      const res = await API.post(`/leads/${leadToConvert._id}/convert`);
+      toast.success('Converted Successfully!', `Lead "${res.data.data.customer.name}" is now an official Customer.`);
+      setConvertModalOpen(false);
+      setLeadToConvert(null);
       fetchLeadsAndUsers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to convert lead');
+      toast.error('Conversion Failed', err.response?.data?.message || 'Failed to convert lead');
+    } finally {
+      setIsConverting(false);
     }
   };
 
@@ -92,9 +112,10 @@ const Pipeline = () => {
         company: '', status: 'New', value: '', source: 'Website',
         assignedTo: '', notes: ''
       });
+      toast.success('Lead Created', 'New opportunity added to Kanban board.');
       fetchLeadsAndUsers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create lead');
+      toast.error('Create Lead Failed', err.response?.data?.message || 'Failed to create lead');
     }
   };
 
@@ -119,8 +140,9 @@ const Pipeline = () => {
       });
       setActivities([res.data.data, ...activities]);
       setNewNote('');
+      toast.success('Note Added', `${activityType} recorded.`);
     } catch (err) {
-      alert('Failed to add note');
+      toast.error('Failed', 'Could not add note');
     }
   };
 
@@ -315,9 +337,9 @@ const Pipeline = () => {
 
                           {['Qualified', 'Proposal Sent', 'Won'].includes(lead.status) && (
                             <button
-                              onClick={() => handleConvertLead(lead._id)}
+                              onClick={() => confirmConvertLead(lead)}
                               title="Convert to Customer"
-                              className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-semibold flex items-center"
+                              className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-semibold flex items-center cursor-pointer transition"
                             >
                               <UserCheck className="w-3 h-3 mr-1" /> Convert
                             </button>
@@ -609,6 +631,17 @@ const Pipeline = () => {
           </div>
         </div>
       )}
+      {/* Convert Opportunity Modal */}
+      <ConfirmModal
+        isOpen={convertModalOpen}
+        onClose={() => setConvertModalOpen(false)}
+        onConfirm={handleConvertLead}
+        title="Convert Deal to Customer Account"
+        message={`Convert "${leadToConvert?.title}" (${leadToConvert?.company || leadToConvert?.contactName}) into a permanent customer record? This will mark the opportunity as Closed Won and set up customer history.`}
+        confirmText="Convert Account"
+        confirmVariant="primary"
+        isLoading={isConverting}
+      />
     </div>
   );
 };

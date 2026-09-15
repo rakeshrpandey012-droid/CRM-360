@@ -23,6 +23,10 @@
       "dest": "/client/assets/$1"
     },
     {
+      "src": "/(.*\\.(?:js|css|ico|png|jpg|jpeg|svg|webp|woff|woff2|ttf|json))$",
+      "dest": "/client/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {

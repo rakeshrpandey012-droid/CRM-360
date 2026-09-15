@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Menu, Bell, CheckCircle2, AlertCircle, Clock, Check, Sun, Moon, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, Bell, CheckCircle2, AlertCircle, Clock, Sun, Moon, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import API from '../api/axios';
 import { useTheme } from '../context/ThemeContext';
 
@@ -15,10 +15,10 @@ const Navbar = ({ setMobileOpen, collapsed, toggleCollapse }) => {
   const fetchNotifications = async () => {
     try {
       const res = await API.get('/notifications');
-      setNotifications(res.data.data.notifications || []);
-      setUnreadCount(res.data.data.unreadCount || 0);
-    } catch (err) {
-      // quiet fail
+      setNotifications(res.data.data?.notifications || []);
+      setUnreadCount(res.data.data?.unreadCount || 0);
+    } catch (_err) {
+      // Quiet fail for polling
     }
   };
 

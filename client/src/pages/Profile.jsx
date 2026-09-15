@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import API from '../api/axios';
 import { updateUserProfile } from '../store/authSlice';
+import { useToast } from '../context/ToastContext';
 import { User, Mail, Phone, Shield, Lock, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const Profile = () => {
+  const toast = useToast();
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -33,8 +35,10 @@ const Profile = () => {
       const res = await API.put('/auth/updatedetails', details);
       dispatch(updateUserProfile(res.data.data));
       setDetailsMsg({ type: 'success', text: 'Profile details updated successfully!' });
+      toast.success('Profile Updated', 'Your profile details have been saved.');
     } catch (err) {
       setDetailsMsg({ type: 'error', text: err.response?.data?.message || 'Failed to update profile' });
+      toast.error('Update Failed', err.response?.data?.message || 'Could not update profile');
     } finally {
       setLoadingDetails(false);
     }
@@ -43,6 +47,7 @@ const Profile = () => {
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (passwords.newPassword !== passwords.confirmPassword) {
+      toast.error('Mismatch', 'New passwords do not match.');
       return setPassMsg({ type: 'error', text: 'New passwords do not match' });
     }
     setLoadingPass(true);
@@ -53,9 +58,11 @@ const Profile = () => {
         newPassword: passwords.newPassword
       });
       setPassMsg({ type: 'success', text: 'Password updated successfully!' });
+      toast.success('Password Updated', 'Your account security credentials were updated.');
       setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
       setPassMsg({ type: 'error', text: err.response?.data?.message || 'Failed to update password' });
+      toast.error('Security Update Failed', err.response?.data?.message || 'Could not update password');
     } finally {
       setLoadingPass(false);
     }

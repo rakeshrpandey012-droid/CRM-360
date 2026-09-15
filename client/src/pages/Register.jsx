@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser, clearAuthError } from '../store/authSlice';
-import { Briefcase, Mail, Lock, User, Phone, ArrowRight, ShieldCheck, Check } from 'lucide-react';
+import { Briefcase, Mail, Lock, User, Phone, ArrowRight, Check } from 'lucide-react';
 
 const Register = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -27,18 +27,22 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 py-12">
-      <div className="max-w-md w-full space-y-6 bg-slate-950/80 p-8 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-md">
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-950 px-4 py-12 overflow-hidden selection:bg-blue-600 selection:text-white">
+      {/* Background Decorative Ambient Glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-600/20 via-indigo-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative max-w-md w-full space-y-6 bg-slate-900/90 p-7 sm:p-9 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-xl">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 mb-3">
-            <Briefcase className="w-6 h-6 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 shadow-xl shadow-blue-500/25 mb-3.5 ring-1 ring-white/20">
+            <Briefcase className="w-7 h-7 text-white" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white tracking-tight">Create CRM360 Account</h2>
-          <p className="mt-1 text-xs text-slate-400">Join your organization sales workspace</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Create CRM360 Account</h1>
+          <p className="mt-1 text-xs text-slate-400 font-medium">Join your organization sales workspace</p>
         </div>
 
         {error && (
-          <div className="p-3 text-sm text-rose-300 bg-rose-950/50 border border-rose-800/50 rounded-xl">
+          <div className="p-3.5 text-xs text-rose-300 bg-rose-950/60 border border-rose-800/60 rounded-xl">
             {error}
           </div>
         )}

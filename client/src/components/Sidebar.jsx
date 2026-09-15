@@ -12,9 +12,7 @@ import {
   ShieldCheck,
   Briefcase,
   ChevronLeft,
-  ChevronRight,
-  PanelLeftClose,
-  PanelLeftOpen
+  ChevronRight
 } from 'lucide-react';
 
 const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, toggleCollapse }) => {

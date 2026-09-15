@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import {
   Users, GitPullRequest, CheckSquare, DollarSign, TrendingUp,
   AlertCircle, Award, CheckCircle2,
@@ -672,6 +674,11 @@ const Dashboard = () => {
     }
   };
 
+  const toast = useToast();
+  const [convertModalOpen, setConvertModalOpen] = useState(false);
+  const [leadIdToConvert, setLeadIdToConvert] = useState(null);
+  const [isConverting, setIsConverting] = useState(false);
+
   useEffect(() => {
     fetchDashboardData();
   }, [role, user?._id]);
@@ -680,8 +687,9 @@ const Dashboard = () => {
     try {
       const res = await API.put(`/tasks/${task._id}/status`, { status: 'Completed' });
       setMyTasks(prev => prev.map(t => (t._id === task._id ? res.data.data : t)));
+      toast.success('Task Completed', `"${task.title}" has been marked complete.`);
     } catch (err) {
-      alert('Failed to update task');
+      toast.error('Update Failed', 'Could not complete task');
     }
   };
 
@@ -689,38 +697,68 @@ const Dashboard = () => {
     try {
       const res = await API.put(`/leads/${leadId}/status`, { status: nextStage });
       setMyLeads(prev => prev.map(l => (l._id === leadId ? res.data.data : l)));
+      toast.success('Opportunity Advanced', `Deal moved to ${nextStage}.`);
     } catch (err) {
-      alert('Failed to advance deal stage');
+      toast.error('Update Failed', 'Could not advance deal stage');
     }
   };
 
-  const handleConvertLead = async (leadId) => {
-    if (!window.confirm('Convert this lead into a customer?')) return;
+  const confirmConvertLead = (leadId) => {
+    setLeadIdToConvert(leadId);
+    setConvertModalOpen(true);
+  };
+
+  const handleConvertLead = async () => {
+    if (!leadIdToConvert) return;
     try {
-      await API.post(`/leads/${leadId}/convert`);
+      setIsConverting(true);
+      await API.post(`/leads/${leadIdToConvert}/convert`);
+      toast.success('Deal Converted!', 'Customer account created and deal recorded as Closed Won.');
+      setConvertModalOpen(false);
+      setLeadIdToConvert(null);
       fetchDashboardData();
     } catch (err) {
-      alert('Failed to convert lead');
+      toast.error('Conversion Failed', 'Failed to convert lead to customer');
+    } finally {
+      setIsConverting(false);
     }
   };
 
   if (loading) return <LoadingSpinner />;
 
-  if (role === 'Admin') {
-    return <AdminDashboard stats={stats} pipeline={pipeline} revenueData={revenueData} teamData={teamData} sourceData={sourceData} />;
-  }
-  if (role === 'Sales Manager') {
-    return <ManagerDashboard stats={stats} pipeline={pipeline} revenueData={revenueData} teamData={teamData} sourceData={sourceData} urgentTaskList={urgentTaskList} />;
-  }
+  const renderDashboardContent = () => {
+    if (role === 'Admin') {
+      return <AdminDashboard stats={stats} pipeline={pipeline} revenueData={revenueData} teamData={teamData} sourceData={sourceData} />;
+    }
+    if (role === 'Sales Manager') {
+      return <ManagerDashboard stats={stats} pipeline={pipeline} revenueData={revenueData} teamData={teamData} sourceData={sourceData} urgentTaskList={urgentTaskList} />;
+    }
+    return (
+      <ExecutiveDashboard
+        myLeads={myLeads}
+        myTasks={myTasks}
+        sourceData={sourceData}
+        onToggleTask={handleToggleTask}
+        onAdvanceLead={handleAdvanceLead}
+        onConvertLead={confirmConvertLead}
+      />
+    );
+  };
+
   return (
-    <ExecutiveDashboard
-      myLeads={myLeads}
-      myTasks={myTasks}
-      sourceData={sourceData}
-      onToggleTask={handleToggleTask}
-      onAdvanceLead={handleAdvanceLead}
-      onConvertLead={handleConvertLead}
-    />
+    <>
+      {renderDashboardContent()}
+      <ConfirmModal
+        isOpen={convertModalOpen}
+        onClose={() => setConvertModalOpen(false)}
+        onConfirm={handleConvertLead}
+        title="Convert Opportunity to Customer"
+        message="Convert this active sales opportunity into an official Customer account? This will log the deal as Closed Won."
+        confirmText="Convert Deal"
+        confirmVariant="primary"
+        isLoading={isConverting}
+      />
+    </>
   );
 };
 

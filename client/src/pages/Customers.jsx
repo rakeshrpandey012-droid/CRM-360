@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api/axios';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import {
   Users,
   Search,
@@ -19,11 +21,17 @@ import {
 } from 'lucide-react';
 
 const Customers = () => {
+  const toast = useToast();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
+
+  // Delete modal state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
@@ -89,9 +97,10 @@ const Customers = () => {
       await API.post('/customers', formData);
       setShowAddModal(false);
       setFormData({ name: '', email: '', phone: '', company: '', industry: 'Technology', status: 'Active', address: '', notes: '' });
+      toast.success('Customer Added', `Successfully added ${formData.name} to directory.`);
       fetchCustomers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create customer');
+      toast.error('Create Customer Failed', err.response?.data?.message || 'Could not create customer');
     }
   };
 
@@ -100,20 +109,31 @@ const Customers = () => {
     try {
       await API.put(`/customers/${selectedCustomer._id}`, formData);
       setShowEditModal(false);
+      toast.success('Customer Updated', `Changes to ${formData.name} saved successfully.`);
       fetchCustomers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update customer');
+      toast.error('Update Failed', err.response?.data?.message || 'Could not update customer');
     }
   };
 
-  const handleDeleteCustomer = async (id) => {
-    if (window.confirm('Are you sure you want to soft-delete this customer record?')) {
-      try {
-        await API.delete(`/customers/${id}`);
-        fetchCustomers();
-      } catch (err) {
-        alert(err.response?.data?.message || 'Failed to delete customer');
-      }
+  const confirmDeleteCustomer = (customer) => {
+    setCustomerToDelete(customer);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteCustomer = async () => {
+    if (!customerToDelete) return;
+    try {
+      setIsDeleting(true);
+      await API.delete(`/customers/${customerToDelete._id}`);
+      toast.success('Customer Removed', `"${customerToDelete.name}" has been soft-deleted.`);
+      setDeleteModalOpen(false);
+      setCustomerToDelete(null);
+      fetchCustomers();
+    } catch (err) {
+      toast.error('Delete Failed', err.response?.data?.message || 'Could not delete customer');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -127,8 +147,9 @@ const Customers = () => {
       });
       setActivities([res.data.data, ...activities]);
       setNewActivityNote('');
+      toast.success('Activity Logged', `${activityType} note added to customer history.`);
     } catch (err) {
-      alert('Failed to log activity');
+      toast.error('Log Failed', 'Could not record activity');
     }
   };
 
@@ -269,7 +290,7 @@ const Customers = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteCustomer(c._id)}
+                        onClick={() => confirmDeleteCustomer(c)}
                         title="Soft Delete"
                         className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 rounded-lg transition"
                       >
@@ -639,6 +660,17 @@ const Customers = () => {
           </div>
         </div>
       )}
+      {/* Confirmation Modal for Deletions */}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteCustomer}
+        title="Delete Customer Record"
+        message={`Are you sure you want to remove "${customerToDelete?.name}"? Their account status will be set to Inactive.`}
+        confirmText="Delete Customer"
+        confirmVariant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

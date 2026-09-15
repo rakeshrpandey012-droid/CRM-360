@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import API from '../api/axios';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import {
   ShieldCheck, Users, UserPlus, Check, X,
-  Trash2, Mail, Phone, Building2, Lock, Shield, UserCog, AlertCircle
+  Trash2, Mail, Phone, Building2, Lock, Shield, UserCog, AlertCircle, Sparkles
 } from 'lucide-react';
 
 const PERMISSIONS = [
@@ -18,11 +20,17 @@ const PERMISSIONS = [
 ];
 
 const Team = () => {
+  const toast = useToast();
   const { user: currentUser } = useSelector((state) => state.auth);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeTab, setActiveTab] = useState('roster'); // 'roster' | 'permissions'
+
+  // Delete Modal State
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -53,8 +61,9 @@ const Team = () => {
     try {
       await API.put(`/users/${userId}/role`, { role: newRole });
       setUsers(users.map(u => (u._id === userId ? { ...u, role: newRole } : u)));
+      toast.success('Role Updated', `Permissions updated to ${newRole}.`);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update role. Admin permissions required.');
+      toast.error('Permission Denied', err.response?.data?.message || 'Admin permissions required to update roles.');
     }
   };
 
@@ -67,19 +76,31 @@ const Team = () => {
         name: '', email: '', password: '', role: 'Sales Executive',
         department: 'Sales', phone: ''
       });
+      toast.success('User Added', `New team member "${formData.name}" onboarded successfully.`);
       fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create user');
+      toast.error('Add Member Failed', err.response?.data?.message || 'Could not create user');
     }
   };
 
-  const handleDeleteUser = async (userId, userName) => {
-    if (!window.confirm(`Are you sure you want to remove ${userName} from the organization?`)) return;
+  const confirmDeleteUser = (member) => {
+    setUserToDelete(member);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
     try {
-      await API.delete(`/users/${userId}`);
-      setUsers(users.filter(u => u._id !== userId));
+      setIsDeleting(true);
+      await API.delete(`/users/${userToDelete._id}`);
+      setUsers(users.filter(u => u._id !== userToDelete._id));
+      toast.success('Member Removed', `${userToDelete.name} has been removed from organization.`);
+      setDeleteModalOpen(false);
+      setUserToDelete(null);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete user');
+      toast.error('Remove Failed', err.response?.data?.message || 'Could not delete user');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -246,9 +267,9 @@ const Team = () => {
                     <td className="px-6 py-4 text-right">
                       {isAdmin && member._id !== currentUser?._id && (
                         <button
-                          onClick={() => handleDeleteUser(member._id, member.name)}
+                          onClick={() => confirmDeleteUser(member)}
                           title="Remove user"
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -430,6 +451,17 @@ const Team = () => {
           </div>
         </div>
       )}
+      {/* Delete User Modal */}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteUser}
+        title="Remove Team Member"
+        message={`Are you sure you want to remove "${userToDelete?.name}" (${userToDelete?.role})? Their workspace access will be permanently revoked.`}
+        confirmText="Remove Member"
+        confirmVariant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };
